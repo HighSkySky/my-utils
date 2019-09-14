@@ -1,10 +1,10 @@
-import { toAsync } from "./to-async";
+import { toAsync } from './to-async';
 
 type AsyncFunc<T> = () => Promise<T>;
 
 /**
  * 并发执行异步函数，并且可以设置最大并发值
- * @param params 
+ * @param params
  * @param { Array } params.asyncFuncList - 异步函数集合
  * @param { number } params.limit - 最大并发值
  */
@@ -32,8 +32,8 @@ export async function toParallel(params: {
 
   return new Promise((resolve) => {
     // 初始化最初的并发
-    while(running < limit && asyncFuncList.length > 0) {
+    while (running < limit && asyncFuncList.length > 0) {
       next(resolve, true);
     }
-  })
+  });
 }

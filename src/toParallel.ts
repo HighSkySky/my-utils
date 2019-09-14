@@ -1,4 +1,4 @@
-import { toAsync } from './to-async';
+import { toAsync } from './toAsync';
 
 type AsyncFunc<T> = () => Promise<T>;
 

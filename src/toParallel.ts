@@ -1,38 +1,59 @@
 import { toAsync } from './toAsync';
 
-type AsyncFunc<T> = () => Promise<T>;
-
 /**
  * 并发执行异步函数，并且可以设置最大并发值
  * @param params
  * @param { Array } params.asyncFuncList - 异步函数集合
  * @param { number } params.limit - 最大并发值
  */
-export async function toParallel(params: {
-  asyncFuncList: AsyncFunc<any>[];
-  limit: number;
-}): Promise<number> {
-  const asyncFuncList = params.asyncFuncList.slice();
-  const limit = params.limit;
-  let running = 0;
-  let success = 0;
+export async function toParallel(
+  asyncFuncList: Array<() => Promise<any>>,
+  limitNum?: number
+): Promise<any[]> {
+  if (
+    !Array.isArray(asyncFuncList) ||
+    asyncFuncList.some((func) => typeof func !== 'function')
+  ) {
+    throw new Error('asyncFuncList must be function array');
+  }
 
-  async function next(resolve: (num: number) => void, isInit?: boolean) {
-    if (isInit || (running < limit && asyncFuncList.length > 0)) {
-      const asyncFunc = asyncFuncList.shift();
+  if (limitNum !== undefined) {
+    if (isNaN(limitNum)) {
+      throw new Error('limitNum must be number');
+    }
+
+    if (+limitNum < 1) {
+      throw new Error('limitNum must >= 1 or not provided');
+    }
+  }
+
+  if (limitNum === undefined) {
+    return Promise.all(asyncFuncList.map((func) => func()));
+  }
+
+  const length = asyncFuncList.length;
+  const list = asyncFuncList.slice();
+  const limit = +limitNum;
+  let running = 0;
+  let result = [];
+
+  async function next(resolve: (num: any) => void, isInit?: boolean) {
+    if (isInit || (running < limit && list.length > 0)) {
+      const asyncFunc = list.shift();
+      const num = length - list.length - 1;
       running = running + 1;
-      const [, error] = await toAsync(asyncFunc());
+      const [data, error] = await toAsync(asyncFunc());
       running = running - 1;
-      success = error ? success : success + 1;
+      result[num] = error || data;
       next(resolve);
-    } else if (running === 0 && asyncFuncList.length === 0) {
-      resolve(success);
+    } else if (running === 0 && list.length === 0) {
+      resolve(result);
     }
   }
 
   return new Promise((resolve) => {
     // 初始化最初的并发
-    while (running < limit && asyncFuncList.length > 0) {
+    while (running < limit && list.length > 0) {
       next(resolve, true);
     }
   });

@@ -6,7 +6,7 @@ type Return<T> = Promise<[T, undefined] | [undefined, Error]>;
  */
 export async function toAsync<T = any>(promise: Promise<T>): Return<T> {
   try {
-    const result = await promise;
+    const result = await Promise.resolve(promise);
     return [result, undefined];
   } catch (error) {
     return [undefined, error];

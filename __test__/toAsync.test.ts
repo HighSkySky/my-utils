@@ -25,6 +25,6 @@ describe('test src/toAsync.ts', () => {
     const [result, error] = await toAsync(testAsync());
     expect(result).toBe(undefined);
     expect(error).not.toBe(undefined);
-    expect(error.message).toBe('this is a promise error');
+    expect(error!.message).toBe('this is a promise error');
   });
 });

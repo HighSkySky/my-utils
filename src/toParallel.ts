@@ -1,5 +1,7 @@
 import { toAsync } from './toAsync';
 
+type AsyncFunc = () => Promise<any>;
+
 /**
  * 并发执行异步函数，并且可以设置最大并发值
  * @param params
@@ -7,7 +9,7 @@ import { toAsync } from './toAsync';
  * @param { number } params.limit - 最大并发值
  */
 export async function toParallel(
-  asyncFuncList: Array<() => Promise<any>>,
+  asyncFuncList: Array<AsyncFunc>,
   limitNum?: number
 ): Promise<any[]> {
   if (
@@ -35,11 +37,11 @@ export async function toParallel(
   const list = asyncFuncList.slice();
   const limit = +limitNum;
   let running = 0;
-  let result = [];
+  let result: any[] = [];
 
   async function next(resolve: (num: any) => void, isInit?: boolean) {
     if (isInit || (running < limit && list.length > 0)) {
-      const asyncFunc = list.shift();
+      const asyncFunc = list.shift() as AsyncFunc;
       const num = length - list.length - 1;
       running = running + 1;
       const [data, error] = await toAsync(asyncFunc());

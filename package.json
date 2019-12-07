@@ -1,15 +1,21 @@
 {
   "name": "my-utils",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "typings",
   "license": "MIT",
+  "sideEffects": true,
   "scripts": {
-    "prettier": "prettier --config .prettierrc --write \"src/**/*.ts\"",
-    "jest": "jest",
-    "tsc": "tsc -p tsconfig.build.json",
-    "watch": "tsc -p tsconfig.build.json -w"
+    "check": "tsc --noEmit",
+    "check:watch": "npm run types -- --watch",
+    "format": "prettier --config .prettierrc --write \"src/**/*.ts\"",
+    "build": "npm run build:type && npm run build:lib",
+    "build:lib": "babel src --out-dir lib --extensions \".ts\"",
+    "build:type": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "test": "jest"
   },
   "devDependencies": {
+    "@babel/cli": "^7.7.5",
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
     "@babel/preset-typescript": "^7.6.0",
@@ -29,8 +35,11 @@
   },
   "lint-staged": {
     "(src|__test__)/**/*.(js|ts|tsx)": [
-      "npm run prettier",
+      "npm run format",
       "git add"
+    ],
+    "src/**/*.(js|ts|tsx)": [
+      "npm run check"
     ]
   }
 }

@@ -1,18 +1,23 @@
 {
-  "name": "my-utils",
-  "version": "1.0.0",
+  "name": "@tql/utils",
+  "description": "custom javascript utility library",
+  "version": "0.0.1-beta0",
   "main": "lib/index.js",
   "types": "typings",
+  "private": false,
   "license": "MIT",
   "sideEffects": true,
   "scripts": {
     "check": "tsc --noEmit",
     "check:watch": "npm run types -- --watch",
     "format": "prettier --config .prettierrc --write \"src/**/*.ts\"",
-    "build": "npm run build:type && npm run build:lib",
+    "build": "npm run clean && npm run build:type && npm run build:lib",
     "build:lib": "babel src --out-dir lib --extensions \".ts\"",
     "build:type": "tsc -p tsconfig.build.json --emitDeclarationOnly",
-    "test": "jest"
+    "clean": "rm -rf lib typings",
+    "test": "jest",
+    "prepublish": "npm run build",
+    "public": "npm publish --access public"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5",
@@ -41,5 +46,9 @@
     "src/**/*.(js|ts|tsx)": [
       "npm run check"
     ]
-  }
+  },
+  "files": [
+    "lib",
+    "typings"
+  ]
 }

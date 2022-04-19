@@ -4,7 +4,6 @@ type AsyncFunc = () => Promise<any>;
 
 /**
  * 并发执行异步函数，并且可以设置最大并发值
- * @param params
  * @param { Array } params.asyncFuncList - 异步函数集合
  * @param { number } params.limit - 最大并发值
  */

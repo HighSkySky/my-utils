@@ -1,16 +1,14 @@
 import { toAsync } from './toAsync';
 
-type AsyncFunc = () => Promise<any>;
-
 /**
  * 并发执行异步函数，并且可以设置最大并发值
  * @param { Array } params.asyncFuncList - 异步函数集合
  * @param { number } params.limit - 最大并发值
  */
-export async function toParallel(
-  asyncFuncList: Array<AsyncFunc>,
+export async function toParallel<T = any>(
+  asyncFuncList: Array<() => Promise<T>>,
   limitNum?: number
-): Promise<any[]> {
+): Promise<T[]> {
   if (
     !Array.isArray(asyncFuncList) ||
     asyncFuncList.some((func) => typeof func !== 'function')
@@ -44,7 +42,7 @@ export async function toParallel(
 
   async function next(resolve: (num: any) => void, isInit?: boolean) {
     if (isInit || (running < limit && list.length > 0)) {
-      const asyncFunc = list.shift() as AsyncFunc;
+      const asyncFunc = list.shift()!;
       const num = length - list.length - 1;
       running = running + 1;
       const [data, error] = await toAsync(asyncFunc());

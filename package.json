@@ -2,28 +2,30 @@
   "name": "@tql/utils",
   "description": "custom javascript utility library",
   "version": "1.0.1",
-  "main": "lib/index.js",
-  "types": "typings",
-  "private": false,
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./types/index.d.ts",
   "license": "MIT",
   "sideEffects": true,
   "scripts": {
     "check": "tsc --noEmit",
     "check:watch": "npm run types -- --watch",
-    "format": "prettier --config .prettierrc --write \"src/**/*.ts\"",
-    "build": "npm run clean && npm run build:type && npm run build:lib",
-    "build:lib": "babel src --out-dir lib --extensions \".ts\"",
-    "build:type": "tsc -p tsconfig.build.json --emitDeclarationOnly",
-    "clean": "rm -rf lib typings",
+    "build": "npm run clean && npm run build:lib && npm run build:es",
+    "build:lib": "tsc --target es5 --outDir lib",
+    "build:es": "tsc --target esnext --outDir es --declaration true --declarationDir types",
+    "clean": "rm -rf lib es",
     "test": "jest",
-    "prepublish": "npm run build",
-    "public": "npm publish --access public"
+    "prepublish": "npm run build"
+  },
+  "dependencies": {
+    "tslib": "^2.4.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
     "@babel/preset-typescript": "^7.6.0",
+    "@tsconfig/node14": "^1.0.1",
     "@types/jest": "^24.0.18",
     "babel-jest": "^24.9.0",
     "husky": "^3.0.5",
@@ -31,7 +33,7 @@
     "lint-staged": "^9.2.5",
     "prettier": "^1.18.2",
     "ts-node": "^8.3.0",
-    "typescript": "^3.6.3"
+    "typescript": "^4.6.4"
   },
   "husky": {
     "hooks": {

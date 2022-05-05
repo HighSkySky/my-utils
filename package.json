@@ -1,7 +1,7 @@
 {
   "name": "@tql/utils",
   "description": "custom javascript utility library",
-  "version": "1.0.2-beta1",
+  "version": "1.0.2",
   "main": "./lib/index.js",
   "module": "./es/index.js",
   "types": "./types/index.d.ts",

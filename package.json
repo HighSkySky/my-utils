@@ -12,8 +12,8 @@
     "check:watch": "npm run types -- --watch",
     "format": "prettier --config .prettierrc --write",
     "build": "npm run clean && npm run build:lib && npm run build:es",
-    "build:lib": "tsc --target es5 --outDir lib",
-    "build:es": "tsc --target esnext --outDir es --declaration true --declarationDir types",
+    "build:lib": "tsc --target es5 --outDir lib -p ./tsconfig.build.json",
+    "build:es": "tsc --target esnext --outDir es --declaration true --declarationDir types -p ./tsconfig.build.json",
     "clean": "rm -rf lib es",
     "test": "jest",
     "prepublish": "npm run build"

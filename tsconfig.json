@@ -1,7 +1,7 @@
 {
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
-    "module": "ESNext",
+    "module": "commonjs",
     "lib": ["ES2015"],
     "declaration": false,
     "moduleResolution": "node",
@@ -20,6 +20,7 @@
     "importHelpers": true
   },
   "include": [
-    "src"
+    "src",
+    "__test__"
   ]
 }

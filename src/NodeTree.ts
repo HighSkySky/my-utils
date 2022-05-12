@@ -22,22 +22,16 @@ class Node<K, T extends BaseData<K> = BaseData<K>> {
   }
 }
 
-export enum NodeTreeTravelType {
-  Parent = 0,
-  Child = 1,
-}
-
 /**
  * 数结构节点遍历
  * @example
  * ```typescript
- * const tree = new NodeTree<number>();
- * tree.init([
+ * const tree = new NodeTree<number>([
  *  { id: 1 },
  *  { id: 2, parentId: 1 },
  * ]);
  * const result = tree.travel(
- *  NodeTreeTravelType.Parent,
+ *  'up',
  *  tree.get(2)!,
  *  (node, result = 0) => {
  *    console.log(node);
@@ -49,6 +43,12 @@ export enum NodeTreeTravelType {
  */
 export class NodeTree<K, T extends BaseData<K> = BaseData<K>> {
   private readonly cache = new Map<K, Node<K, T>>();
+
+  constructor(list?: T[]) {
+    if (list) {
+      this.apply(list);
+    }
+  }
 
   private sort() {
     this.cache.forEach((node) => {
@@ -66,7 +66,7 @@ export class NodeTree<K, T extends BaseData<K> = BaseData<K>> {
     return this.cache.get(id);
   }
 
-  public init(list: T[]) {
+  public apply(list: T[]) {
     list.forEach((item) => {
       const node = new Node<K, T>(item);
       this.cache.set(node.id, node);
@@ -76,19 +76,19 @@ export class NodeTree<K, T extends BaseData<K> = BaseData<K>> {
 
   /**
    * 遍历节点方法
-   * @param type - 遍历方向, true 向父节点, false 向子节点
+   * @param type - 向父节点 or 向子节点
    * @param node - 开始节点
    * @param handle - 遍历处理函数, 每个节点都会调用
    * @param data - 遍历处理函数的返回值
    * @returns
    */
   public travel<R>(
-    type: NodeTreeTravelType,
+    type: 'up' | 'down',
     node: Node<K, T>,
     handle: (node: Node<K, T>, result?: R) => R,
     data?: R
   ): R {
-    if (type === NodeTreeTravelType.Parent) {
+    if (type === 'up') {
       if (node.parent) {
         return this.travel(type, node.parent, handle, handle(node, data));
       }

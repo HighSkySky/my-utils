@@ -13,7 +13,7 @@ class Node<K, T extends BaseData<K> = BaseData<K>> {
 
   public parent: Node<K, T> | null = null;
 
-  public readonly children: Set<Node<K, T>> = new Set();
+  public readonly children: Array<Node<K, T>> = [];
 
   constructor(data: T) {
     this.id = data.id;
@@ -25,6 +25,12 @@ class Node<K, T extends BaseData<K> = BaseData<K>> {
     this.children.toJSON = function() {
       return Array.from(this);
     };
+  }
+
+  public addChildren(node: Node<K, T>) {
+    if (!this.children.includes(node)) {
+      this.children.push(node);
+    }
   }
 }
 
@@ -62,7 +68,7 @@ export class NodeTree<K, T extends BaseData<K> = BaseData<K>> {
         const parentNode = this.cache.get(node.parentId);
         if (parentNode) {
           node.parent = parentNode;
-          parentNode.children.add(node);
+          parentNode.addChildren(node);
         }
       }
     });

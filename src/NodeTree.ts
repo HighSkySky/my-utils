@@ -19,6 +19,12 @@ class Node<K, T extends BaseData<K> = BaseData<K>> {
     this.id = data.id;
     this.parentId = data.parentId;
     this.origin = data;
+
+    // 避免 JSON.stringify(new Set([1,2,3])) => '{}'
+    // @ts-ignore
+    this.children.toJSON = function() {
+      return Array.from(this);
+    };
   }
 }
 
